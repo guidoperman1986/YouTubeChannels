@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row mt-4">
+        <div class="col-md-6 ml-auto mr-auto">
+            <table class="table mx-auto">
+                <thead class="bg-secondary">
+                    <th>Playlists</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let playlist of playLists">
+                        <td>{{playlist.Titulo}}</td>
+                        <td class="text-center"><button [routerLink]="['/playlist',playlist.playList]" class="btn btn-dark">Ver</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
