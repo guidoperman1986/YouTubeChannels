@@ -24,7 +24,8 @@ export class PlaylistComponent {
       this.id = params["id"];
       this._yts.getVideos(params["id"])
           .subscribe( (videos:any) =>{                              
-                  this.videos = videos;                                                           
+                  this.videos = videos;  
+                  console.log(videos)                                                         
           });
 
       this._yts.getChannelData(this.id)

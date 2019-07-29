@@ -1,9 +1,11 @@
 <!-- Image and text -->
 <nav class="navbar navbar-inverse bg-danger">
-    <a class="text-white texto_navbar">      
+    <a [routerLink]="['/home']" class="text-white texto_navbar" style="text-decoration: none">      
       <img src="../assets/youtube.jpg" width="50" heigth="50" alt="">
       Youtube PlayLists
     </a>
 </nav>
 
 <router-outlet></router-outlet>
+
+

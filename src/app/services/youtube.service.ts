@@ -24,7 +24,7 @@ export class YoutubeService {
   }
 
   getVideos(id){
-
+    console.log("YoutubeService "+id)
     let url = `${ this.youtubeUrl }/playlistItems`;
     let params = new URLSearchParams();
 
@@ -47,7 +47,7 @@ export class YoutubeService {
                   let snippet = video.snippet;
                   videos.push( snippet );
                 }
-
+                console.log(videos)
                 return videos;
             
             },error=>{
@@ -66,7 +66,7 @@ export class YoutubeService {
     params.set( 'key', this.apikey );
 
     return this.http.get( url, { search: params } )
-            .pipe(map( res =>{      
+            .pipe(map( res =>{
                 return res.json().pageInfo;
             }));
   }
@@ -80,5 +80,17 @@ export class YoutubeService {
       }
       console.log(thumbnails);
     })
+  }
+
+  addNewPlaylist(){
+
+  }
+
+  deletePlayList(id){
+
+  }
+
+  updatePlayList(id){
+
   }
 }
