@@ -1,5 +1,6 @@
 <div class="container">
-    <div class="row mt-4">
+
+    <!-- <div class="row mt-4" *ngIf="!offline">
         <div class="col-md-6 ml-auto mr-auto">
             <table class="table mx-auto">
                 <thead class="bg-secondary">
@@ -14,30 +15,38 @@
                 </tbody>
             </table>
         </div>
+    </div> -->
+
+    <div class="row mt-4" *ngIf="offline">
+        <div class="alert alert-danger ml-auto mr-auto text-center" role="alert">
+          <h1 class="alert-heading">Atencion</h1>          
+          <h4 class="alert-heading">No dispones de coneccion a Internet</h4>          
+        </div>
     </div>
 
+    <div class="alert alert-warning text-center mt-5" role="alert" *ngIf="loading">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+        <h4 class="alert-heading">Cargando</h4>
+        <p>Espere....</p>
+    </div>
 
-    <!-- <div class="card-deck mt-4"> -->
-    <!--     <div class="card" *ngFor="let playlist of playLists; let i=index"> -->
-    <!--       <img [src]="thumbnails[i]" class="card-img-top"> -->
-    <!--       <div class="card-body"> -->
-    <!--         <h5 class="card-title">{{playlist.Titulo}}</h5> -->
-    <!--         <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>             -->
-    <!--       </div> -->
-    <!--     </div> -->
-    <!-- </div> -->
-</div>
+    <div class="col-md-12">
+
+        <div class="card-columns mt-5" *ngIf="thumbnails && !offline && !loading">
+      
+            <div class="card animated fadeIn fast" *ngFor="let thumbnail of thumbnails; let i=index">
+              <img class="card-img-top img-fluid" [src]="thumbnail.thumbnails.medium.url">
+              <div class="card-block">
+                <h5 class="card-title">{{thumbnail.channelTitle}}</h5>
+                <p class="card-text">{{thumbnail.description | muyLargo}}</p>
+                <button class="btn btn-dark btn-block" [routerLink]="['/playlist',thumbnail.playlistId]">Click me</button>
+              </div>
+            </div>
+        
+        </div>
 
 
-<div class="container">
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    </div>
+
 </div>

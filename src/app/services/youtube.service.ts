@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { Http, URLSearchParams }  from "@angular/http";
 //import 'rxjs/Rx';
-import { map } from 'rxjs/operators'
+import { map, take, catchError } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
@@ -11,34 +11,77 @@ import { map } from 'rxjs/operators'
 export class YoutubeService {
   private youtubeUrl:string = "https://www.googleapis.com/youtube/v3";
   private apikey:string = "AIzaSyBdtLdVgQv5VV0k7MWA4MAHHLX5gWFvVrI";
-  private playlist:string = "UUuaPTYj15JSkETGnEseaFFg";
+  private playlist:string = "UUuaPTYj15JSkETGnEseaFFg";  
 
   private nextPageToken:string = "";
+
+  params = new URLSearchParams();
+
+  videos:any;
 
   constructor(private firestore: AngularFirestore, private http:Http) { 
 
   }
 
-  getAllCollections(){
+  getAllCollections(){//traigo las colecciones de firebase de playlists
     return this.firestore.collection('PlayLists').valueChanges();
   }
 
-  getVideos(id){
-    console.log("YoutubeService "+id)
-    let url = `${ this.youtubeUrl }/playlistItems`;
-    let params = new URLSearchParams();
-
-    params.set( 'part', 'snippet' );
-    params.set( 'maxResults', '10' );
-    params.set( 'playlistId', id );
-    params.set( 'key', this.apikey );
+  setParams(id){//seteo los parametros para la busqueda de playlist en youtube
+    this.params.set( 'part', 'snippet' );
+    this.params.set( 'maxResults', '10' );
+    this.params.set( 'playlistId', id );
+    this.params.set( 'key', this.apikey );
 
     if( this.nextPageToken ){
-      params.set( 'pageToken', this.nextPageToken );
+      this.params.set( 'pageToken', this.nextPageToken );
     }
+  }
 
+  /* async getResult(): Promise<MyCustomObject> {
+    if (typeof this.result === 'undefined') 
+    {
+        // save result
+        this.result = await this.service.call()
+        .toPromise()
+        .then(resp =>resp as MyCustomObject);//Do you own cast here
 
-    return this.http.get( url, { search: params } )
+    }
+    return this.result;
+  } */
+
+  getVideosAsync(id){    
+    let url = `${ this.youtubeUrl }/playlistItems`;
+      this.setParams(id);
+      
+      return this.http.get( url, { search: this.params } )
+              .pipe(map( res =>{                  
+                  let snippet;
+                  for( let video of res.json().items ){
+                  
+                    snippet = video.snippet;
+                    break
+                    
+                  }                
+                  return snippet;
+              
+              },error=>{
+                catchError(error=>(throwError(error)))
+              })
+      );    
+    
+    
+    
+  }
+
+  getVideos(id){
+    //console.log("YoutubeService "+id)
+    let url = `${ this.youtubeUrl }/playlistItems`;
+    //let params = new URLSearchParams();
+
+    this.setParams(id);
+
+    return this.http.get( url, { search: this.params } )
             .pipe(map( res =>{                                  
                 this.nextPageToken = res.json().nextPageToken;
 
@@ -52,8 +95,8 @@ export class YoutubeService {
             
             },error=>{
               console.log(error)
-            }));
-
+            })
+    );
   }
 
   getChannelData(id){

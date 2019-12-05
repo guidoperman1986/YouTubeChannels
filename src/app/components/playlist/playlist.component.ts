@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { YoutubeService } from 'src/app/services/youtube.service';
 import { ActivatedRoute } from '@angular/router';
+import { fromEvent } from 'rxjs';
+import { map, debounceTime, tap } from 'rxjs/operators';
 
 declare var $:any;
 
@@ -14,9 +16,11 @@ export class PlaylistComponent {
   videos:any[] = [];
   videoSel:any;
 
-  totalVideos:string;
+  totalVideos:number;
   numberOfShowed:number=10;
+  public titulo:string;
 
+  scroll:boolean;
 
   constructor(public _yts:YoutubeService, private ar:ActivatedRoute) {
 
@@ -24,8 +28,8 @@ export class PlaylistComponent {
       this.id = params["id"];
       this._yts.getVideos(params["id"])
           .subscribe( (videos:any) =>{                              
-                  this.videos = videos;  
-                  console.log(videos)                                                         
+                  this.videos = videos;
+                  this.titulo = this.videos[0].channelTitle;
           });
 
       this._yts.getChannelData(this.id)
@@ -34,10 +38,21 @@ export class PlaylistComponent {
           })
     })
 
+    fromEvent(window, "scroll").pipe(
+      tap(() => {this.scroll = true,console.log(this.scroll);}),
+      debounceTime(2000)
+    ).subscribe(() => {
+        this.scroll = false;
+        console.log(this.scroll);
+    });
+
 
 
   }
 
+  scrollToTop(){
+    window.scrollTo(0, 0);
+  }
   
 
   cargarMas(){
@@ -45,7 +60,11 @@ export class PlaylistComponent {
         .subscribe( videos =>  {          
           this.videos.push.apply( this.videos, videos )
         });
-        this.numberOfShowed = this.numberOfShowed + 10;
+        if (this.numberOfShowed + 10 > this.totalVideos){
+          this.numberOfShowed = this.totalVideos
+        }else{
+          this.numberOfShowed = this.numberOfShowed + 10;
+        }
   }
 
   verVideo( video:any ){

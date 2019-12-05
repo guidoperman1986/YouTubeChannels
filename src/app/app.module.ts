@@ -21,6 +21,7 @@ import { YoutubeService } from './services/youtube.service';
 import { app_routing } from './app.routes';
 import { PlaylistComponent } from './components/playlist/playlist.component';
 import { VideoYoutubePipe } from './pipes/video-youtube.pipe';
+import { MuyLargoPipe } from './pipes/muy-largo.pipe';
 
 
 
@@ -29,7 +30,8 @@ import { VideoYoutubePipe } from './pipes/video-youtube.pipe';
     AppComponent,
     HomeComponent,
     PlaylistComponent,
-    VideoYoutubePipe
+    VideoYoutubePipe,
+    MuyLargoPipe
   ],
   imports: [
     BrowserModule,

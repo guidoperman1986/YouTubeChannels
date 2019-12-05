@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { YoutubeService } from '../../services/youtube.service';
 
 @Component({
@@ -9,29 +9,43 @@ import { YoutubeService } from '../../services/youtube.service';
 export class HomeComponent implements OnInit {
   playLists:any;
   thumbnails:any[]=[];
+  offline:boolean=false;
+  loading:boolean;
 
-  constructor(private ytservice:YoutubeService) { 
-    this.ytservice.getAllCollections().subscribe((playLists:any)=>{      
+  constructor(private ytservice:YoutubeService) {
+    /* console.log(this.offline);  */
+    this.ytservice.getAllCollections().subscribe((playLists:any)=>{     
       this.playLists = playLists;
+      console.log(playLists);
 
-      for(let i=0; i<= playLists.length-1;i++){        
-        this.ytservice.getVideos(playLists[i].playList).subscribe((play:any)=>{          
-          //console.log(play)
-          this.thumbnails.push(play[0].thumbnails.high.url);
-        })
+      if (this.playLists.length == 0){
+        this.offline = true
+        return;
+      }else{
+        this.offline = false
       }
-      
-      
-      //playLists.forEach(pl => {
-      //  //console.log(pl.Titulo+" "+pl.playList)
-      //  this.ytservice.getVideos(pl.playList).subscribe((play:any)=>{               
-        //  //  console.log(play[0])
-        //    this.thumbnails.push(play[0].thumbnails.high.url);
-      //  })
-      //});
+      this.loading=true;
+      for(let i=0; i<= playLists.length-1;i++){                
+        this.ytservice.getVideosAsync(playLists[i].playList).subscribe(res=>{     
+          if (res != undefined){
+            this.thumbnails.push(res);
+          }          
+        },error=>console.log(error))        
+      }
+      setTimeout(()=>{
+        this.loading=false;
+      },3000)
+    },error=>console.log(error));    
+  }
 
-      //console.log(this.thumbnails)      
-    });    
+  @HostListener('window:offline', [ '$event' ])
+  onDisconect(event) {      // ...        
+        this.offline=true;
+        
+  }
+  @HostListener('window:offline', [ '$event' ])
+  onConnect(event) {      // ...        
+        this.offline=false;        
   }
 
   ngOnInit() {

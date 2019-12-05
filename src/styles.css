@@ -1,8 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
-.main-container{
-    margin-top: 40px;
+
+html,body{
+  overscroll-behavior-y: contain;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;  
+  background-color: #eaeaea;
+}
+
+.main-container{        
+    margin-top:20px;
     margin-bottom: 300px;
-  }
+    border-radius: 25px;
+    background-color: azure;
+    text-align: center;    
+    padding-bottom: 45px;    
+}
+
+.titulo{
+  margin-top: 10px;
+}
 
   
 .texto_navbar {
@@ -11,4 +28,10 @@
   font-weight: bold;
   text-decoration: none;
   text-transform: capitalize  
+}
+
+.arrow{
+  position: fixed;
+  right: 10%;
+  bottom: 30px;  
 }

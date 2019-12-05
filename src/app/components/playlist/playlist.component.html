@@ -1,7 +1,19 @@
+<!-- TODO: Animate.css, deshabilitar el botono una vez que llego al final de los viddeos,  -->
+
+<div class="container main-container mb-4">
+        <div class="row">
+          <div class="col-md-2">
+              <i routerLink="home" class="fas fa-arrow-circle-left fa-2x mt-3" style="left: 0px;"></i>
+          </div>
+          <div class="col-md-8">
+  
+            <h1 class="titulo text-center">{{titulo}}</h1>
+  
+          </div>
+          <div class="col-md-2"></div>
 
 
-<div class="container main-container">
-        <h1>Canal de YouTube</h1>        
+        </div>
         <hr>
       
         <div class="card-columns" *ngIf="videos.length > 0">
@@ -55,5 +67,10 @@
           </div>
       
         </div>
+      </div>
+
+
+      <div class="arrow" *ngIf="scroll" (click)="scrollToTop()">
+          <i class="fas fa-arrow-circle-up fa-2x"></i>
       </div>
       
